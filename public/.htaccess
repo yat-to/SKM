@@ -1,0 +1,23 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+
+    # Mencegah error 403 (Directory Browsing) & set default halaman utama
+    Options -Indexes +FollowSymLinks
+    DirectoryIndex index.html
+
+    # 1. Hapus trailing slash di akhir URL secara otomatis (opsional)
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} (.+)/$
+    RewriteRule ^ %1 [L,R=301]
+
+    # 2. Clean URLs (Memetakan URL /about langsung ke /about.html)
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME}\.html -f
+    RewriteRule ^(.*)$ $1.html [L]
+
+    # 3. Fallback Route (Jika file/folder tidak ditemukan, alihkan ke index.html)
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^ index.html [L]
+</IfModule>
