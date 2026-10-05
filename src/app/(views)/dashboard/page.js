@@ -169,13 +169,32 @@ export default function DashboardPage() {
 
     const { summary, trenKepuasan, kategoriKepuasan, kepuasanPerLayanan, komentarPengguna } = dashboardData;
 
-    // Filter daftar layanan berdasarkan search query
-    const filteredLayanan = useMemo(() => {
+    // Urutkan daftar layanan berdasarkan peringkat (skor tertinggi, responden terbanyak) lalu beri nomor peringkat
+    const rankedLayanan = useMemo(() => {
         if (!kepuasanPerLayanan) return [];
-        return kepuasanPerLayanan.filter((item) =>
+        return [...kepuasanPerLayanan]
+            .sort((a, b) => {
+                const skorA = Number(a.skor) || 0;
+                const skorB = Number(b.skor) || 0;
+                if (skorB !== skorA) {
+                    return skorB - skorA; // Skor tertinggi di posisi teratas
+                }
+                const respA = Number(a.responden) || 0;
+                const respB = Number(b.responden) || 0;
+                return respB - respA; // Jika skor sama, urutkan berdasarkan responden terbanyak
+            })
+            .map((item, index) => ({
+                ...item,
+                peringkat: index + 1,
+            }));
+    }, [kepuasanPerLayanan]);
+
+    const filteredLayanan = useMemo(() => {
+        if (!rankedLayanan) return [];
+        return rankedLayanan.filter((item) =>
             item.nama?.toLowerCase().includes(searchLayanan.toLowerCase())
         );
-    }, [kepuasanPerLayanan, searchLayanan]);
+    }, [rankedLayanan, searchLayanan]);
 
     // Filter komentar berdasarkan rating
     const filteredKomentar = useMemo(() => {
@@ -208,8 +227,6 @@ export default function DashboardPage() {
             .reduce((acc, curr) => acc + (Number(curr.jumlah) || 0), 0);
         return ((puasCount / total) * 100).toFixed(1);
     }, [kategoriKepuasan]);
-
-    const mutuStatus = getMutuPelayanan(summary?.skorKepuasan);
 
     if (loading) {
         return <DashboardSkeleton />;
@@ -279,13 +296,6 @@ export default function DashboardPage() {
                             <Star size={24} className="fill-amber-400 text-amber-400" />
                         </div>
                     </div>
-
-                    <div className="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between">
-                        <StarRating rating={summary.skorKepuasan} size={15} />
-                        <span className={`text-xs px-2.5 py-1 rounded-full font-semibold border ${mutuStatus.color}`}>
-                            {mutuStatus.label}
-                        </span>
-                    </div>
                 </div>
 
                 {/* Kartu 2: Tingkat Kepuasan Positif */}
@@ -306,15 +316,6 @@ export default function DashboardPage() {
                         <div className="w-12 h-12 rounded-2xl bg-purple-50 border border-purple-100 flex items-center justify-center text-purple-600 group-hover:scale-105 transition-transform">
                             <ThumbsUp size={24} />
                         </div>
-                    </div>
-
-                    <div className="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
-                        <span className="flex items-center gap-1.5 text-purple-700 font-medium truncate">
-                            <Sparkles size={14} className="shrink-0 text-purple-500" /> Respon Positif
-                        </span>
-                        <span className="px-2 py-0.5 rounded-full bg-purple-50 text-purple-700 font-semibold border border-purple-100 text-[11px]">
-                            Puas & Sangat Puas
-                        </span>
                     </div>
                 </div>
 
@@ -337,13 +338,6 @@ export default function DashboardPage() {
                             <Users size={24} />
                         </div>
                     </div>
-
-                    <div className="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
-                        <span className="flex items-center gap-1.5 text-emerald-600 font-medium">
-                            <CheckCircle2 size={14} /> Partisipasi Publik
-                        </span>
-                        <span className="text-slate-400">Terverifikasi</span>
-                    </div>
                 </div>
 
                 {/* Kartu 4: Total Layanan / Aplikasi */}
@@ -364,13 +358,6 @@ export default function DashboardPage() {
                         <div className="w-12 h-12 rounded-2xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 group-hover:scale-105 transition-transform">
                             <Layers size={24} />
                         </div>
-                    </div>
-
-                    <div className="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
-                        <span className="flex items-center gap-1.5 text-blue-600 font-medium">
-                            <AppWindow size={14} /> Terintegrasi SKM
-                        </span>
-                        <span className="text-slate-400">Konsel</span>
                     </div>
                 </div>
             </div>
@@ -562,15 +549,15 @@ export default function DashboardPage() {
                                         <div className="flex items-center justify-between gap-3 mb-2">
                                             <div className="flex items-center gap-2.5 min-w-0">
                                                 <span className={`w-6 h-6 rounded-lg flex items-center justify-center text-xs font-bold shrink-0 ${
-                                                    idx === 0
+                                                    item.peringkat === 1
                                                         ? 'bg-amber-100 text-amber-700 ring-1 ring-amber-300'
-                                                        : idx === 1
+                                                        : item.peringkat === 2
                                                         ? 'bg-slate-200 text-slate-700'
-                                                        : idx === 2
+                                                        : item.peringkat === 3
                                                         ? 'bg-orange-100 text-orange-700'
                                                         : 'bg-slate-100 text-slate-500'
                                                 }`}>
-                                                    {idx + 1}
+                                                    {item.peringkat || idx + 1}
                                                 </span>
                                                 <h3 className="text-sm font-semibold text-slate-800 truncate">
                                                     {item.nama}
