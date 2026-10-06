@@ -571,10 +571,7 @@ export default function LandingPage() {
                             <div>
                                 <div className="flex items-center gap-2">
                                     <span className="font-extrabold text-slate-900 text-base sm:text-lg tracking-tight">
-                                        PORTAL SKM DIGITAL
-                                    </span>
-                                    <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
-                                        Data Terbuka
+                                        PORTAL SKM
                                     </span>
                                 </div>
                                 <p className="text-xs text-slate-500 font-medium leading-none mt-0.5">
@@ -619,7 +616,7 @@ export default function LandingPage() {
                                 className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold text-white bg-gradient-to-r from-blue-700 to-indigo-700 hover:from-blue-800 hover:to-indigo-800 rounded-xl shadow-sm hover:shadow transition-all duration-150 cursor-pointer"
                             >
                                 <LogIn size={14} />
-                                <span>Login Petugas</span>
+                                <span>Login</span>
                             </Link>
                         </div>
                     </div>
@@ -1057,9 +1054,6 @@ export default function LandingPage() {
                                     <h4 className="font-extrabold text-white text-base">
                                         Pemerintah Kabupaten Konawe Selatan
                                     </h4>
-                                    <p className="text-xs text-slate-400">
-                                        Dinas Komunikasi, Informatika dan Persandian
-                                    </p>
                                 </div>
                             </div>
                             <p className="text-xs text-slate-400 leading-relaxed max-w-md">
@@ -1100,14 +1094,14 @@ export default function LandingPage() {
                                 Administrasi Sistem
                             </h4>
                             <p className="text-xs text-slate-400">
-                                Khusus petugas dan pengelola aplikasi untuk mengelola data master, instrumen survei, dan manajemen layanan.
+                                Khusus petugas dan pengelola aplikasi untuk mengelola data master dan manajemen layanan.
                             </p>
                             <Link
                                 href="/login"
                                 className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 transition-all cursor-pointer"
                             >
                                 <LogIn size={13} />
-                                <span>Akses Login Petugas</span>
+                                <span>Akses Login</span>
                             </Link>
                         </div>
                     </div>
